@@ -1,2 +1,4 @@
 client_secret.json
 token.pkl
+sechduleManager/token.pkl
+sechduleManager/client_secret.json
