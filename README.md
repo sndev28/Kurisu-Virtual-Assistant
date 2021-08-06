@@ -1,7 +1,6 @@
 # Kurisu Virtual Assistant
 A virtual assistant to manage my schedules and random stuff. Backend written in python and UI in dart.
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
 ### _Features_
 Under developement...!!
