@@ -3,17 +3,19 @@ A virtual assistant to manage my schedules and random stuff. Backend written in 
 
 
 ### _Features_
-Under developement...!!
+
+```
+Daily schedule manager in connection with Google Calendar
+Anime tracker
+```
 
 
 
 ### _Agenda_ 
 
 ```
-Daily schedule manager in connection with Google Calendar
 Youtube tracker
 Online class launcher
-Anime tracker
 ```
 
 ### _Nomenclature_
