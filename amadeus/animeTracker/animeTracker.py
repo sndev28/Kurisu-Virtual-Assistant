@@ -4,33 +4,40 @@ import json
 import requests
 from bs4 import BeautifulSoup
 
-baseLink = 'https://myanimelist.net/anime.php?cat=anime&q='
-imageBaseLink = 'https://cdn.myanimelist.net/images/anime/'
+
 
 
 class Anime:
-    def __init__(self, name, posterLink):
+    def __init__(self, name, posterLink, id):
         self.name = name
         self.posterLink = posterLink
+        self.id = id
 
     def toJSON(self):
-        return {'name' : self.name, 'posterLink' : self.posterLink}
+        return {'id' : self.id, 'name' : self.name, 'posterLink' : self.posterLink}
 
 
 class AnimeTracker:
     def __init__(self, ANIME_DATABASE):
         self.animeRepo = pickle.load(open(ANIME_DATABASE, 'rb'))
         self.feed_url = 'https://www.livechart.me/feeds/episodes'
+        self.imageBaseLink = 'https://cdn.myanimelist.net/images/anime/'
+        self.baseLink = 'https://myanimelist.net/anime.php?cat=anime&q='
 
-    def new(self, name, posterLink):
-        newEntry = Anime(name, posterLink)
+    
+    def allTracking(self):
+        return [anime.toJSON() for anime in self.animeRepo]
+
+
+    def new(self, id, name, posterLink):
+        newEntry = Anime(id, name, posterLink)
         self.animeRepo.append(newEntry)
         pickle.dump(self.animeRepo, open('animeRepo.pkl', 'wb'))
 
 
-    def remove(self, name):
+    def remove(self, id):
         for anime in self.animeRepo:
-            if anime.name == name:
+            if anime.id == id:
                 self.animeRepo.remove(anime)
                 pickle.dump(self.animeRepo, open('animeRepo.pkl', 'wb'))
                 break
@@ -45,12 +52,12 @@ class AnimeTracker:
                 if anime.name in entry.title:
                     recentAired.append(anime.toJSON())
 
-        return json.dumps({'recentlyAired': recentAired})
+        return recentAired
         
 
     def search(self, searchQuery):
         searchQuery = searchQuery.replace(' ', '+')
-        searchQueryLink = baseLink + searchQuery
+        searchQueryLink = self.baseLink + searchQuery
 
         query = requests.get(searchQueryLink)
 
@@ -71,17 +78,17 @@ class AnimeTracker:
                 try:
                     posterLink = searchResult.find('img')['data-srcset']
                     linkParts = posterLink.split('anime/')
-                    finalLink = imageBaseLink + linkParts[1].split('?')[0]
+                    finalLink = self.imageBaseLink + linkParts[1].split('?')[0]
                 except:
                     posterLink = 'Not Available'            
 
                 queryResult.append({'name':name,'posterLink':finalLink})
 
         except:
-            pass
+            return []
 
 
-        return json.dumps({'queryResult':queryResult})
+        return queryResult
 
 
 

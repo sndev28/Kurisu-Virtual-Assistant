@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Api, Resource, reqparse, abort
 from flask_cors import CORS
 
@@ -34,7 +34,7 @@ scheduleManagerArgs.add_argument('utcoffset', type = str, help = 'utcoffset not 
 scheduleManagerArgs.add_argument('id', type = str, help = 'Event id not sent')
 
 
-class Schedules(Resource):
+class ScheduleManagerAPI(Resource):
 
     #Commented api requests are working but not implemented. To be implemented once an authorization system has been setup
 
@@ -45,13 +45,13 @@ class Schedules(Resource):
     def post(self): #Recieve events
         args = scheduleManagerArgs.parse_args()
         listOfEvents = schedule_manager.retrieveSimpleEvents(criterion = args.get('criterion'))
-        return {'events' : listOfEvents}
+        return {'events' : listOfEvents}, 200
 
     def options(self):
         print('Options handled!')
         return 200
 
-    def update(self):
+    def put(self):
         args = scheduleManagerArgs.parse_args()
 
         if args.get('summary') == None or args.get('description') == None or args.get('eventStartTime') == None or args.get('eventEndTime') == None or args.get('utcoffset') == None:
@@ -59,7 +59,8 @@ class Schedules(Resource):
 
         try:
             schedule_manager.addEvent(args.get('summary'), args.get('description'), args.get('eventStartTime'), args.get('eventEndTime'), args.get('utcoffset'))
-        except:
+        except Exception as e:
+            print(e)
             abort(409, message = 'Error in given data!')
         
         return 200
@@ -80,7 +81,86 @@ class Schedules(Resource):
 
         
 
-api.add_resource(Schedules, '/schedules')
+api.add_resource(ScheduleManagerAPI, '/schedules')
+
+
+
+
+animeTrackerArgs = reqparse.RequestParser()
+animeTrackerArgs.add_argument('id', type = str, help = 'No ID sent!')
+animeTrackerArgs.add_argument('name', type = str, help = 'No name sent!')
+animeTrackerArgs.add_argument('posterLink', type = str, help = 'No poster link sent!')
+animeTrackerArgs.add_argument('searchQuery', type = str, help = 'Search query not sent!')
+
+
+
+class AnimeTrackerAPI(Resource):
+
+    def get(self): #Recently aired episodes
+        try:
+            if request.headers.get('criterion') == 'recentAired':
+                return {'recentAired': anime_tracker.track()}, 200
+            else:
+                return {'tracking': anime_tracker.allTracking()}, 200
+        except Exception as e:
+            print(e)
+            abort(404, message = 'Error retrieving recently aired! Contact developer!')
+
+    def post(self): #New additions
+        args = animeTrackerArgs.parse_args()
+        
+        if args.get('name') == None or args.get('posterLink') == None or args.get('id') == None:
+            abort(404, 'Not enough information! Please send id, name and posterlink!')
+
+        try:
+            anime_tracker.new(args.get('id'), args.get('name'), args.get('posterLink'))
+        except Exception as e:
+            print(e)
+            abort(409, message = 'Error in given data!')
+
+        return 200
+
+    def delete(self): #delete tracking anime
+        args = animeTrackerArgs.parse_args()
+        
+        if args.get('id') == None:
+            abort(404, 'Not enough information! Please send id!')
+        
+        try:
+            anime_tracker.remove(args.get('id'))
+        except Exception as e:
+            print(e)
+            abort(409, message = 'Error in given data!')
+
+        return 200
+
+    def put(self):
+        args = animeTrackerArgs.parse_args()
+        
+        if args.get('searchQuery') == None:
+            abort(404, 'Not enough information! Please send search query!')
+        
+        try:
+            queryResult = anime_tracker.search(args.get('searchQuery'))
+        except Exception as e:
+            print(e)
+            abort(409, message = 'Error in given data!')
+
+        return {'queryResult':queryResult}, 200
+
+
+
+api.add_resource(AnimeTrackerAPI, '/animetracker')
+
+        
+
+        
+
+
+
+
+
+
 
 
 

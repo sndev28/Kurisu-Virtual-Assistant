@@ -112,8 +112,10 @@ class ScheduleManager:
 
     def addEvent(self, summary, description, eventStartTime, eventEndTime, utcoffset):
 
-        parsedStartDateTime = eventStartTime.strftime('%Y-%m-%dT%H:%M:%S') + utcoffset
-        parsedEndDateTime = eventEndTime.strftime('%Y-%m-%dT%H:%M:%S') + utcoffset
+        # parsedStartDateTime = eventStartTime.strftime('%Y-%m-%dT%H:%M:%S') + utcoffset
+        # parsedEndDateTime = eventEndTime.strftime('%Y-%m-%dT%H:%M:%S') + utcoffset
+        parsedStartDateTime = eventStartTime + utcoffset
+        parsedEndDateTime = eventEndTime + utcoffset
 
         newEvent = {
                 'summary': summary,
@@ -134,7 +136,8 @@ class ScheduleManager:
 
 
 if __name__ == '__main__':
-    manager = ScheduleManager()
+    token = '../resources/token.pkl'
+    manager = ScheduleManager(token)
     events = manager.retrieveSimpleEvents(criterion='all')
     for event in events:
         print(event)
