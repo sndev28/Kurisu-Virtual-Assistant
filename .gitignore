@@ -1,5 +1,3 @@
 client_secret.json
 token.pkl
-scheduleManager/token.pkl
-scheduleManager/client_secret.json
-animeTracker/animeRepo.pkl
+*.pkl
