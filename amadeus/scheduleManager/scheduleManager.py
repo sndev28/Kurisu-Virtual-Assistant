@@ -1,4 +1,3 @@
-from logging import error
 from googleapiclient.discovery import build
 import pickle
 from datetime import datetime, timedelta
@@ -6,13 +5,14 @@ from datetime import datetime, timedelta
 
 class ScheduleManager:
 
-    def __init__(self):
-        self.credentials = pickle.load(open('token.pkl', 'rb')) #Google credentials
+    def __init__(self, token):
+        self.credentials = pickle.load(open(token, 'rb')) #Google credentials
         self.service = build('calendar', 'v3', credentials = self.credentials)
 
 
     def retrieveCalendar(self):
         self.calendar = self.service.calendars().get(calendarId='primary').execute()
+        return self.calendar
 
 
     def retrieveEvents(self):
@@ -29,6 +29,9 @@ class ScheduleManager:
 
 
     def retrieveSimpleEvents(self, criterion):
+
+        if criterion == None:
+            criterion = 'today'
 
 
         self.retrieveEvents()
@@ -132,18 +135,18 @@ class ScheduleManager:
 
 if __name__ == '__main__':
     manager = ScheduleManager()
-    events = manager.retrieveSimpleEvents(criterion='upcoming')
+    events = manager.retrieveSimpleEvents(criterion='all')
     for event in events:
         print(event)
     print(len(events))
 
-    current = datetime.today()
-    today = datetime(current.year, current.month, current.day)
+    # current = datetime.today()
+    # today = datetime(current.year, current.month, current.day)
 
-    nextday = datetime.now()+timedelta(1)
-    tomorrow = datetime(nextday.year, nextday.month, nextday.day)
+    # nextday = datetime.now()+timedelta(1)
+    # tomorrow = datetime(nextday.year, nextday.month, nextday.day)
 
-    manager.addEvent('test1', 'this is a test', current, tomorrow, '+05:30')
+    # manager.addEvent('test1', 'this is a test', current, tomorrow, '+05:30')
 
 
 

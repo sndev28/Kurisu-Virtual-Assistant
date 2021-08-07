@@ -18,8 +18,8 @@ class Anime:
 
 
 class AnimeTracker:
-    def __init__(self):
-        self.animeRepo = pickle.load(open('animeRepo.pkl', 'rb'))
+    def __init__(self, ANIME_DATABASE):
+        self.animeRepo = pickle.load(open(ANIME_DATABASE, 'rb'))
         self.feed_url = 'https://www.livechart.me/feeds/episodes'
 
     def new(self, name, posterLink):
