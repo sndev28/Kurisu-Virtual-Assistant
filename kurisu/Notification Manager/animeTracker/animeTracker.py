@@ -2,11 +2,13 @@ import requests
 import time
 
 
-def AnimeTracker(toast):
+def AnimeTracker(toast, URL):
     
     REFRESH_TIME = 12 * 60 * 60 # hours * min * secs // refresh time in seconds
 
-    BASE_URL = 'http://192.168.1.35:5000/animetracker'
+    BASE_URL = URL + 'animetracker'
+
+    print('Anime tracker ready!')
 
     while True:
         response = requests.get(BASE_URL, headers = {'criterion': 'recentAired'})
@@ -22,7 +24,7 @@ def AnimeTracker(toast):
             for anime in listOfRecentAired:
                 notificationMessage += '• ' + anime.get('name') + '\n'
 
-            toast.show_toast(title = 'Kurisu', msg = notificationMessage, timeout = 10)
+            toast.show_toast(title = 'Kurisu', msg = notificationMessage, duration = 10)
 
 
         time.sleep(REFRESH_TIME)

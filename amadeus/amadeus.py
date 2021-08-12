@@ -1,18 +1,8 @@
+from amadeus.classSchedule import classSchedule
 from flask import Flask, request
 from flask_restful import Api, Resource, reqparse, abort
 from flask_cors import CORS
 
-
-#Modules
-
-from animeTracker.animeTracker import AnimeTracker, Anime
-from scheduleManager.scheduleManager import ScheduleManager
-
-GOOGLE_AUTH_TOKEN = 'resources/token.pkl'
-ANIME_DATABASE = 'resources/animeRepo.pkl'
-
-schedule_manager = ScheduleManager(GOOGLE_AUTH_TOKEN)
-anime_tracker = AnimeTracker(ANIME_DATABASE)
 
 
 #Setup
@@ -22,7 +12,17 @@ CORS(app)
 api = Api(app)
 
 
-#API
+#Modules
+
+## TO REMOVE ANY MODULE, COMMENT/REMOVE THE CORRESPONDING SECTION (eg. To remove the anime tracker module, comment out or delete eveything between the '# Anime Tracker' and '# Class Schedule')
+
+
+# Schedule Manager
+
+from scheduleManager.scheduleManager import ScheduleManager
+GOOGLE_AUTH_TOKEN = 'resources/token.pkl'
+schedule_manager = ScheduleManager(GOOGLE_AUTH_TOKEN)
+
 
 scheduleManagerArgs = reqparse.RequestParser()
 scheduleManagerArgs.add_argument('criterion', type = str, help = 'Crtierion not sent')
@@ -84,6 +84,12 @@ class ScheduleManagerAPI(Resource):
 api.add_resource(ScheduleManagerAPI, '/schedules')
 
 
+
+# Anime Tracker
+
+from animeTracker.animeTracker import AnimeTracker, Anime
+ANIME_DATABASE = 'resources/animeRepo.pkl'
+anime_tracker = AnimeTracker(ANIME_DATABASE)
 
 
 animeTrackerArgs = reqparse.RequestParser()
@@ -154,7 +160,46 @@ api.add_resource(AnimeTrackerAPI, '/animetracker')
 
         
 
-        
+
+# Class Schedule
+
+from classSchedule.classSchedule import ClassSchedule
+SCHEDULE_DATABASE = 'resources/schedule.pkl'
+class_schedule = ClassSchedule(SCHEDULE_DATABASE)
+
+
+classScheduleArgs = reqparse.RequestParser()  
+classScheduleArgs.add_argument('day', type = str, help = 'Day not sent!')
+classScheduleArgs.add_argument('subject', type = str, help = 'Subject not sent!')
+classScheduleArgs.add_argument('startTime', type = str, help = 'Start time not sent!')
+classScheduleArgs.add_argument('endTime', type = str, help = 'End time not sent!')
+classScheduleArgs.add_argument('link', type = str, help = 'Link not sent!')
+
+
+class ClassScheduleAPI(Resource):
+    def get(self):
+        return class_schedule.retrieveTimetable(), 200
+
+    def post(self):
+        args = classScheduleArgs.parse_args()
+        class_schedule.addClass(args['day'], args['subject'], args['startTime'], args['endTime'], args['link'])
+        return 200
+
+    def put(self):
+        args = classScheduleArgs.parse_args()
+        return { args['day'] : class_schedule.retrieveSchedule(args['day'])}, 200
+
+    def delete(self):
+        args = classScheduleArgs.parse_args()
+        class_schedule.deleteClass(args['day'], args['subject'], args['startTime'])
+        return 200
+
+
+
+api.add_resource(ClassScheduleAPI, '/classSchedule')
+
+
+
 
 
 
