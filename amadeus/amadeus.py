@@ -1,4 +1,3 @@
-from amadeus.classSchedule import classSchedule
 from flask import Flask, request
 from flask_restful import Api, Resource, reqparse, abort
 from flask_cors import CORS
@@ -196,7 +195,7 @@ class ClassScheduleAPI(Resource):
 
 
 
-api.add_resource(ClassScheduleAPI, '/classSchedule')
+api.add_resource(ClassScheduleAPI, '/classSchedules')
 
 
 

@@ -19,6 +19,7 @@ class Anime:
 
 class AnimeTracker:
     def __init__(self, ANIME_DATABASE):
+        self.ANIME_DATABASE = ANIME_DATABASE
         self.animeRepo = pickle.load(open(ANIME_DATABASE, 'rb'))
         self.feed_url = 'https://www.livechart.me/feeds/episodes'
         self.imageBaseLink = 'https://cdn.myanimelist.net/images/anime/'
@@ -32,14 +33,14 @@ class AnimeTracker:
     def new(self, id, name, posterLink):
         newEntry = Anime(id, name, posterLink)
         self.animeRepo.append(newEntry)
-        pickle.dump(self.animeRepo, open('animeRepo.pkl', 'wb'))
+        pickle.dump(self.animeRepo, open(self.ANIME_DATABASE, 'wb'))
 
 
     def remove(self, id):
         for anime in self.animeRepo:
             if anime.id == id:
                 self.animeRepo.remove(anime)
-                pickle.dump(self.animeRepo, open('animeRepo.pkl', 'wb'))
+                pickle.dump(self.animeRepo, open(self.ANIME_DATABASE, 'wb'))
                 break
         
 

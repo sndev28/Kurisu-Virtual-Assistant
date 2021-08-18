@@ -54,8 +54,8 @@ def ClassScheduler(URL, autoMode = False):
                     year = currentTime.year,
                     month = currentTime.month,
                     day = currentTime.day,
-                    hour = endHour,
-                    minute = endMin
+                    hour = int(endHour),
+                    minute = int(endMin)
                 ) 
 
             if currentTime > endTime:
@@ -80,8 +80,8 @@ def ClassScheduler(URL, autoMode = False):
                 year = currentTime.year,
                 month = currentTime.month,
                 day = currentTime.day,
-                hour = startHour,
-                minute = startMin
+                hour = int(startHour),
+                minute = int(startMin)
             )
             
             
