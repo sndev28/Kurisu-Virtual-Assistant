@@ -24,7 +24,8 @@ class _ClassSchedulesState extends State<ClassSchedules> {
 
   bool schedulesRetrieved = false;
 
-  TextEditingController dayController = TextEditingController();
+  String dropdownButtonValue = 'Monday';
+
   TextEditingController subjectController = TextEditingController();
   TextEditingController startTimeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
@@ -203,10 +204,38 @@ class _ClassSchedulesState extends State<ClassSchedules> {
                                               left: 15.0,
                                               right: 15.0,
                                               top: 10.0),
-                                          child: TextField(
-                                            controller: dayController,
-                                            decoration: InputDecoration(
-                                              hintText: 'Day',
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: DropdownButton(
+                                              itemHeight: 48.0,
+                                              focusColor: Colors.green,
+                                              dropdownColor: Colors.purple[50],
+                                              value: dropdownButtonValue,
+                                              icon: Icon(Icons
+                                                  .arrow_drop_down_outlined),
+                                              onChanged: (String? newValue) {
+                                                setState(() {
+                                                  dropdownButtonValue =
+                                                      newValue!;
+                                                });
+                                              },
+                                              items: <String>[
+                                                'Monday',
+                                                'Tuesday',
+                                                'Wednesday',
+                                                'Thursday',
+                                                'Friday',
+                                                'Saturday',
+                                                'Sunday'
+                                              ]
+                                                  .map<
+                                                      DropdownMenuItem<
+                                                          String>>((e) =>
+                                                      DropdownMenuItem<String>(
+                                                        value: e,
+                                                        child: Text(e),
+                                                      ))
+                                                  .toList(),
                                             ),
                                           ),
                                         ),
@@ -225,6 +254,17 @@ class _ClassSchedulesState extends State<ClassSchedules> {
                                               horizontal: 15.0),
                                           child: TextField(
                                             controller: startTimeController,
+                                            onTap: () async {
+                                              TimeOfDay selectedTime =
+                                                  await showTimePicker(
+                                                        context: context,
+                                                        initialTime:
+                                                            TimeOfDay.now(),
+                                                      ) ??
+                                                      TimeOfDay.now();
+                                              startTimeController.text =
+                                                  selectedTime.format(context);
+                                            },
                                             decoration: InputDecoration(
                                               hintText: 'Start Time',
                                             ),
@@ -235,6 +275,17 @@ class _ClassSchedulesState extends State<ClassSchedules> {
                                               horizontal: 15.0),
                                           child: TextField(
                                             controller: endTimeController,
+                                            onTap: () async {
+                                              TimeOfDay selectedTime =
+                                                  await showTimePicker(
+                                                        context: context,
+                                                        initialTime:
+                                                            TimeOfDay.now(),
+                                                      ) ??
+                                                      TimeOfDay.now();
+                                              endTimeController.text =
+                                                  selectedTime.format(context);
+                                            },
                                             decoration: InputDecoration(
                                               hintText: 'End Time',
                                             ),
@@ -259,7 +310,10 @@ class _ClassSchedulesState extends State<ClassSchedules> {
                                               onTap: () async {
                                                 bool responseStatus =
                                                     await createClassSchedule(
-                                                        dayController.text,
+                                                        dropdownButtonValue[0]
+                                                                .toLowerCase() +
+                                                            dropdownButtonValue
+                                                                .substring(1),
                                                         subjectController.text,
                                                         startTimeController
                                                             .text,
@@ -292,7 +346,6 @@ class _ClassSchedulesState extends State<ClassSchedules> {
                                                 }
 
                                                 setState(() {});
-                                                dayController.text = '';
                                                 subjectController.text = '';
                                                 startTimeController.text = '';
                                                 endTimeController.text = '';
