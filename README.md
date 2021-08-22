@@ -15,6 +15,8 @@ Daily schedule manager in connection with Google Calendar
 
 Anime tracker
 
+Online class launcher
+
 ```
 
   
@@ -29,7 +31,6 @@ Anime tracker
 
 Youtube tracker
 
-Online class launcher
 
 ```
 
