@@ -17,9 +17,9 @@ if __name__ == '__main__':
 
     #Schedule Manager
 
-    scheduleLoop = threading.Thread(target = ScheduleManager, args = (toast, URL))
-    scheduleLoop.setDaemon(True)
-    scheduleLoop.start()
+    # scheduleLoop = threading.Thread(target = ScheduleManager, args = (toast, URL))
+    # scheduleLoop.setDaemon(True)
+    # scheduleLoop.start()
 
     #Anime Tracker
     
@@ -38,7 +38,10 @@ if __name__ == '__main__':
     classScheduleLoop.start()
 
 
-    while scheduleLoop.is_alive() and animeLoop.is_alive() and classScheduleLoop.is_alive():
+    # while scheduleLoop.is_alive() and animeLoop.is_alive() and classScheduleLoop.is_alive():
+    #     print('Kurisu runnning!')
+    #     time.sleep(60)
+    while animeLoop.is_alive() and classScheduleLoop.is_alive():
         print('Kurisu runnning!')
         time.sleep(60)
         

@@ -33,6 +33,9 @@ def ScheduleManager(toast, URL):
         notificationMessage = 'Event reminders : \n'
         newNotifications = False
 
+        if events == None:
+            events = []
+
         for event in events:
             try:
                 eventStartTime = datetime.strptime(event['start']['dateTime'][:-6], '%Y-%m-%dT%H:%M:%S')

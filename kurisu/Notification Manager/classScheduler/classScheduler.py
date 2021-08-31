@@ -4,6 +4,7 @@ import webbrowser as wb
 import tkinter
 from tkinter import messagebox
 import psutil
+import time
 
 weekdays = {
     0 : 'monday',
@@ -17,7 +18,7 @@ weekdays = {
 
 def getSchedule(day, URL):
     print('Getting schedules for the day!')
-    BASE_URL = URL + 'classSchedule'
+    BASE_URL = URL + 'classSchedules'
     response = requests.put(BASE_URL, data = {'day': day})
 
     return response.json()[day]
@@ -34,16 +35,24 @@ def ClassScheduler(URL, autoMode = False):
     parent.overrideredirect(1)
     parent.withdraw()
     
-    REFRESH_TIME = 5 * 60 #  min * secs // refresh time in seconds
+    REFRESH_TIME = 10 * 60 #  min * secs // refresh time in seconds
 
     classInProgress = None
+    previousCheckTime = datetime.now()
+
+    day = weekdays[int(datetime.now().weekday())]
+
+    schedules = getSchedule(day, URL)
+
 
     while True:
         day = weekdays[int(datetime.now().weekday())]
 
-        schedules = getSchedule(day, URL)
-
         currentTime = datetime.now()
+
+        if (currentTime - previousCheckTime).seconds >= REFRESH_TIME:
+            previousCheckTime = currentTime
+            schedules = getSchedule(day, URL)
 
 
         if classInProgress != None:
@@ -83,6 +92,14 @@ def ClassScheduler(URL, autoMode = False):
                 hour = int(startHour),
                 minute = int(startMin)
             )
+
+            endTime = datetime(
+                year = currentTime.year,
+                month = currentTime.month,
+                day = currentTime.day,
+                hour = int(endHour),
+                minute = int(endMin)
+            )
             
             
 
@@ -94,8 +111,9 @@ def ClassScheduler(URL, autoMode = False):
 
                     wb.open(_class['link'])                    
                     break
-
         
+
+        time.sleep(60)
             
             
 
